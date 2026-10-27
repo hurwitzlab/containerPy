@@ -17,7 +17,7 @@ No LLM step: every image comes from the one `template.def`.
 ```
 new_image.sh <NAME> -> recipes/<NAME>/{config.sh,packages.txt}  (gitignored copies of *.example*)
 site.sh + recipes/<NAME>/config.sh + packages.txt
-  -> generate_def.sh   validate, check names on anaconda.org/PyPI, resolve base digest,
+  -> generate_def.sh   validate, check pypi: names on PyPI, resolve base digest,
                        write inputs/pixi.toml, render template.def
                        -> builds/<NAME>/<VERSION_TAG>/<NAME>_<VERSION_TAG>.def + inputs/
   -> sbatch build.sh builds/<NAME>/<VERSION_TAG>   (xfer partition)
@@ -53,10 +53,12 @@ site.sh + recipes/<NAME>/config.sh + packages.txt
   `PYTHONSTARTUP`/`PERL5LIB`/`PERLLIB` (CPython ignores empty PYTHON*),
   `PYTHONNOUSERSITE=1`, and `LD_LIBRARY_PATH=/.singularity.d/libs`.
   `%test` sets leaking host values and checks.
-- `%environment` sources `/opt/env/activate.sh`, built in `%post` from
-  `pixi shell-hook` filtered to PATH/CONDA_* exports and the packages'
-  `activate.d` scripts (e.g. openjdk's JAVA_HOME). Don't source the raw
-  hook: it defines a `pixi()` function and PS1.
+- `%environment` sources `/opt/env/activate.sh`: plain `export` lines frozen
+  in `%post` from `pixi shell-hook --json` (which runs the packages'
+  `activate.d` scripts, e.g. openjdk's JAVA_HOME), PATH prepended, PIXI_*/PS1
+  dropped. Never source activate.d scripts at runtime: they are written for
+  bash (libarrow's failed `%test` under /bin/sh with "Bad substitution") and
+  some write into the env (libarrow's gdb symlink).
 - `pixi install --run-post-link-scripts`: conda runs post-link scripts and
   some bioconda packages need them; pixi skips them by default.
 - `git` is not in the base image; pixi runs under `pixi exec -s git --`
@@ -68,6 +70,9 @@ site.sh + recipes/<NAME>/config.sh + packages.txt
 - Template placeholders are `@UPPER_CASE@`; the generator fails on leftovers.
   `@CMD@` is `NAME` lowercased (the `<name> --help` command and the module name).
 - The `.def`'s `%files` paths are relative; `build.sh` cds to the build dir.
+- conda names are NOT checked in generate_def.sh: anaconda.org's
+  package API returns every file (numpy ~10 s, pyarrow >60 s), and the
+  anaconda.org and prefix.dev web pages return 200 for missing names.
 
 ## Deploy (deploy.sh)
 

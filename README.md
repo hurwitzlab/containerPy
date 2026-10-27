@@ -69,7 +69,9 @@ Python itself comes from `PYTHON_VERSION` (X.Y) in `config.sh`; listing
 `python` is refused. Prefer conda over `pypi:`: conda packages are prebuilt
 with their C libraries and command-line tools. Use `pypi:` only for packages
 that aren't on conda-forge or bioconda. `generate_def.sh` checks that every
-name exists on anaconda.org or PyPI, so typos fail before the build job.
+`pypi:` name exists. A misspelled conda name is reported by the solver in
+`build.sh`, about a minute into the job (anaconda.org is too slow to check
+every name up front).
 
 To get a GitHub commit SHA:
 
@@ -233,7 +235,7 @@ micromamba create -p ./env --file ../provenance/default_linux-64_conda_spec.txt 
 - `PYTHON_VERSION` is X.Y; `SNAPSHOT_DATE` is a valid past date
 - `CHANNELS` doesn't include `defaults`
 - every package line is a supported form, listed once; GitHub refs are full SHAs
-- every package exists on anaconda.org (in `CHANNELS`) or PyPI
+- every `pypi:` package exists on PyPI (conda names are checked by the solver in `build.sh`, which fails within a minute)
 - the base image tag exists (digest lookup)
 - refuses if the target `.sif` already exists
 

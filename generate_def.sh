@@ -14,7 +14,7 @@
 # The summary and the sbatch command that builds it go to stderr; stdout is
 # only the build directory path, so run.sh can capture it.
 #
-# Needs outbound internet (ghcr.io, anaconda.org, pypi.org) for a few small
+# Needs outbound internet (ghcr.io, pypi.org) for a few small
 # lookups only, so it is fine on a login node. Solving the environment is
 # heavier and happens in build.sh on the xfer partition.
 set -euo pipefail
@@ -103,21 +103,16 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 done < "$PACKAGES_FILE"
 (( ${#REQUESTED[@]} > 0 )) || die "no packages given"
 
-### --- Check every package exists (catches typos before the xfer job) ---
-# Versions are not checked here; the solver in build.sh does that.
+### --- Check PyPI packages exist (catches typos before the xfer job) ---
+# conda names are not checked here: anaconda.org's API takes 5-60+ s per
+# popular package (it returns every file), and the solver in build.sh names
+# any missing package about a minute into the job. Versions are left to the
+# solver too.
 for r in "${REQUESTED[@]}"; do
     read -r kind name <<<"$r"
-    if [[ "$kind" == conda ]]; then
-        found=""
-        for ch in $CHANNELS; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' "https://api.anaconda.org/package/$ch/$name")
-            [[ "$code" == 200 ]] && { found=1; break; }
-        done
-        [[ -n "$found" ]] || die "conda package '$name' not found in channels: $CHANNELS (on PyPI only? use pypi:$name)"
-    else
-        code=$(curl -s -o /dev/null -w '%{http_code}' -L "https://pypi.org/pypi/$name/json")
-        [[ "$code" == 200 ]] || die "PyPI package '$name' not found (HTTP $code)"
-    fi
+    [[ "$kind" == pypi ]] || continue
+    code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 -L "https://pypi.org/pypi/$name/json")
+    [[ "$code" == 200 ]] || die "PyPI package '$name' not found (HTTP $code)"
 done
 
 ### --- Resolve the base image tag to an immutable digest ---

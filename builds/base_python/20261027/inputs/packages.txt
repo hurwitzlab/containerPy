@@ -1,0 +1,36 @@
+# One package reference per line. '#' starts a comment.
+#
+#   samtools                                conda (conda-forge, then bioconda), newest by SNAPSHOT_DATE
+#   samtools=1.21                           conda, exact version (=1.21 also matches 1.21.x builds)
+#   numpy>=2.0                              conda, version constraint (>, >=, <, <=, ==, !=, =)
+#   pypi:scanpy                             PyPI, newest by SNAPSHOT_DATE
+#   pypi:scanpy==1.10.4                     PyPI, exact version
+#   pypi:name@git+https://github.com/owner/repo@<commit-sha>
+#                                           GitHub, MUST be pinned to a commit SHA
+#
+# Prefer conda: bioconda/conda-forge packages ship compiled libraries and
+# command-line tools. Use pypi: only for packages that are not on conda.
+# Python itself comes from PYTHON_VERSION in config.sh; don't list it.
+
+# Packages for this image:
+# Core arrays, data frames, scientific computing
+numpy
+pandas
+scipy
+# Plotting
+matplotlib
+seaborn
+# Statistics and machine learning
+scikit-learn
+statsmodels
+# Fast data frames and file formats (parquet/feather, Excel, YAML)
+polars
+pyarrow
+openpyxl
+pyyaml
+# Interactive use and utilities
+ipython
+tqdm
+requests
+# Sequence file parsing (FASTA/FASTQ/GenBank); small, widely used at BRC
+biopython

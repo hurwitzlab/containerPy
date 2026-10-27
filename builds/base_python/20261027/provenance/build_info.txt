@@ -1,0 +1,13 @@
+name           base_python
+version_tag    20261027
+python_version 3.13.18
+base_image     ghcr.io/prefix-dev/pixi:0.83.0-noble
+base_digest    sha256:3dce86c6e87371c58035aa41b09f2b56ca8f011722320551e0c2bfc1c59da5fb
+pixi_version   0.83.0
+os             Ubuntu 24.04.5 LTS
+snapshot_date  2026-10-26
+channels       conda-forge bioconda
+env_prefix     /opt/env/.pixi/envs/default
+maintainer     sdweave2@ncsu.edu
+generated      2026-10-27T16:15:31Z by sdweave2
+built          2026-10-27T16:17:15Z

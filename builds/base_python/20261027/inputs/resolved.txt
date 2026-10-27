@@ -1,0 +1,2 @@
+BASE_IMAGE=ghcr.io/prefix-dev/pixi:0.83.0-noble
+BASE_DIGEST=sha256:3dce86c6e87371c58035aa41b09f2b56ca8f011722320551e0c2bfc1c59da5fb

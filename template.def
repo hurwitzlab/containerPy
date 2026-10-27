@@ -87,14 +87,30 @@ pixi exec -s git -- pixi install --locked --run-post-link-scripts
 ENV=/opt/env/.pixi/envs/default
 [[ -x "$ENV/bin/python" ]] || { echo "ERROR: no python in $ENV" >&2; exit 1; }
 
-# Activation for %environment: PATH, CONDA_PREFIX, and the packages' own
-# activate.d scripts (e.g. openjdk sets JAVA_HOME). Taken from pixi's
-# shell-hook, minus its interactive parts (pixi() wrapper, PS1, PIXI_*).
-{
-    echo "# Written by containerPy's template.def from 'pixi shell-hook'."
-    echo "export PATH=\"$ENV/bin:\$PATH\""
-    pixi shell-hook --locked -s bash | grep -E '^(export (CONDA_PREFIX|CONDA_DEFAULT_ENV|CONDA_SHLVL)=|\. )'
-} > /opt/env/activate.sh
+# Activation for %environment, frozen now as plain `export` lines: pixi runs
+# the packages' activate.d scripts (e.g. openjdk sets JAVA_HOME) and reports
+# the resulting variables. Those scripts are written for bash (libarrow's
+# fails under /bin/sh) and some try to write into the environment, so they
+# must not run at container start. The env path is fixed, so the values
+# can't go stale. PATH is prepended, not frozen; PIXI_* and PS1 are dropped.
+# (JSON is piped straight into python: writing it to $TMPDIR/activation.json
+# first failed once with "Is a directory", not reproducible outside a build.)
+freeze_activation=$(cat <<'EOF'
+import json, os, shlex, sys
+data = json.load(sys.stdin)
+env = data.get("environment_variables", data)
+print("# Written by containerPy's template.def from 'pixi shell-hook --json'.")
+print(f'export PATH="{sys.argv[1]}/bin:$PATH"')
+for k in sorted(env):
+    v = env[k]
+    if k == "PATH" or k == "PS1" or k.startswith("PIXI_") or os.environ.get(k) == v:
+        continue
+    print(f"export {k}={shlex.quote(v)}")
+EOF
+)
+pixi shell-hook --locked --json | "$ENV/bin/python" -I -c "$freeze_activation" "$ENV" > /opt/env/activate.sh
+grep -q '^export CONDA_PREFIX=' /opt/env/activate.sh || { echo "ERROR: activation has no CONDA_PREFIX" >&2; exit 1; }
+cat /opt/env/activate.sh
 
 # --- Provenance ---------------------------------------------------------------
 cat > /opt/provenance/requested_packages.txt <<'EOF'

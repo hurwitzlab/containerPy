@@ -1,0 +1,5 @@
+f2py
+ipython
+ipython3
+numpy-config
+tqdm

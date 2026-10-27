@@ -1,0 +1,15 @@
+conda numpy
+conda pandas
+conda scipy
+conda matplotlib
+conda seaborn
+conda scikit-learn
+conda statsmodels
+conda polars
+conda pyarrow
+conda openpyxl
+conda pyyaml
+conda ipython
+conda tqdm
+conda requests
+conda biopython

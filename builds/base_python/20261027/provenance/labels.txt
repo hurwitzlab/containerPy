@@ -1,0 +1,25 @@
+Base_Digest: sha256:3dce86c6e87371c58035aa41b09f2b56ca8f011722320551e0c2bfc1c59da5fb
+Base_Image: ghcr.io/prefix-dev/pixi:0.83.0-noble
+Channels: conda-forge bioconda
+Generated: 2026-10-27T16:15:31Z by sdweave2
+Maintainer: sdweave2@ncsu.edu
+Name: base_python
+Python_Version: 3.13
+Snapshot_Date: 2026-10-26
+VersionTag: 20261027
+org.label-schema.build-arch: amd64
+org.label-schema.build-date: Tuesday_27_October_2026_12:21:42_EDT
+org.label-schema.schema-version: 1.0
+org.label-schema.usage: /.singularity.d/runscript.help
+org.label-schema.usage.apptainer.runscript.help: /.singularity.d/runscript.help
+org.label-schema.usage.apptainer.version: 1.4.2-1.el8
+org.label-schema.usage.singularity.deffile.bootstrap: docker
+org.label-schema.usage.singularity.deffile.from: ghcr.io/prefix-dev/pixi@sha256:3dce86c6e87371c58035aa41b09f2b56ca8f011722320551e0c2bfc1c59da5fb
+org.opencontainers.image.created: 2026-10-23T06:47:40.891Z
+org.opencontainers.image.description: A docker image for the pixi package manager 🐳 📦
+org.opencontainers.image.licenses: BSD-3-Clause
+org.opencontainers.image.revision: f3c870ad21059c2e55db60cad0e806e81d3ebae3
+org.opencontainers.image.source: https://github.com/prefix-dev/pixi-docker
+org.opencontainers.image.title: pixi-docker
+org.opencontainers.image.url: https://github.com/prefix-dev/pixi-docker
+org.opencontainers.image.version: latest
