@@ -1,0 +1,8 @@
+# One of each reference type.
+samtools=1.21                   # bioconda, version-pinned
+pysam                           # bioconda Python library
+numpy>=2.0                      # conda-forge, constraint
+openjdk                         # has an activate.d script (sets JAVA_HOME)
+pypi:rich                       # PyPI
+pypi:requests[socks]            # PyPI with extras
+pypi:toolz@git+https://github.com/pytoolz/toolz@07f30a9c75e07a4b7095d0ec93ba4e963504f259

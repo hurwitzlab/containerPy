@@ -1,0 +1,18 @@
+# container-mod profile for /usr/local/usrapps/brc/developer_tools.
+#
+# Source of truth for the copy installed at
+# /rs1/shares/brc/admin/tools/container-mod_v1/profiles/developer_tools
+# (that repo is TuftsRT's, so the profile is versioned here instead).
+# deploy.sh installs it there if missing and refuses to run if the two differ.
+#
+# Same layout as container-mod's `brc` profile, pointed at developer_tools.
+MOD_EXISTING_DIR_DEF="/usr/local/usrapps/brc/developer_tools/modules"
+PUBLIC_IMAGEDIR="/usr/local/usrapps/brc/developer_tools/images"
+PUBLIC_EXECUTABLE_DIR="/usr/local/usrapps/brc/developer_tools/tools"
+IMG_OUTDIR=$PUBLIC_IMAGEDIR
+MOD_OUTDIR="/usr/local/usrapps/brc/developer_tools/modules"
+EXEC_OUTDIR=$PUBLIC_EXECUTABLE_DIR
+
+# Shared by every BRC module tree: bind paths for /rs1, /share, /gpfs_common,
+# /rsstu, sourced by each modulefile at load time.
+BIND_CONFIG_FILE="/usr/local/usrapps/brc/env/modules.config"

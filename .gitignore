@@ -1,0 +1,13 @@
+# Images are too big for git; the rest of each build dir (.def, inputs/,
+# provenance/, a few hundred KB) is committed as the record of what was built
+**/*.sif
+**/*.sif.partial
+
+# Slurm job logs
+logs/
+*.out
+*.err
+
+# Per-image configs made by new_image.sh; each build keeps its own copy in
+# builds/<NAME>/<TAG>/inputs/
+recipes/
