@@ -222,6 +222,32 @@ don't shadow other modules.
 `profiles/developer_tools` is a byte-identical copy of custom_containeR's;
 `deploy.sh` refuses to run if it differs from container-mod's installed copy.
 
+## Publishing to ghcr.io (push.sh)
+
+```bash
+./push.sh builds/base_python/20261027
+# -> oras://ghcr.io/<GHCR_NAMESPACE>/py-base_python:20261027
+```
+
+`push.sh` is a separate step from `deploy.sh`. It reads the build directory
+without changing it, checks `provenance/sif.sha256`, and uploads the `.sif` as an
+ORAS artifact to `ghcr.io/<GHCR_NAMESPACE>/<GHCR_PREFIX><name lowercased>:<VERSION_TAG>`
+(both set in `site.sh`; the `py-` prefix keeps these images from colliding with
+tool images in the same namespace). It then confirms the tag is on the registry
+and appends a line to `logs/push.log`.
+
+- Log in once first: `apptainer registry login --username <github user> oras://ghcr.io`
+  (a token with `write:packages`). `push.sh` reads that stored login and never
+  takes a token on the command line.
+- Published tags are never replaced. If the tag exists, or `push.sh` can't check,
+  it refuses. `--force_ghcr_overwrite` replaces an existing tag on purpose.
+- New packages are **private**. Make each one public once, in its settings page
+  on GitHub (this can't be done through the API). Later tags of the same package
+  stay public.
+- Users pull with `apptainer pull base_python_20261027.sif oras://ghcr.io/<GHCR_NAMESPACE>/py-base_python:20261027`.
+
+`push.sh` is byte-identical in custom_containeR and containerPy; change both together.
+
 ## Recreating the environment outside the container
 
 ```bash
@@ -250,6 +276,7 @@ micromamba create -p ./env --file ../provenance/default_linux-64_conda_spec.txt 
 | `generate_def.sh` | validate inputs, write `pixi.toml`, resolve digest, render `.def` |
 | `build.sh` | sbatch script (xfer): solve `pixi.lock`, build, export provenance, freeze |
 | `deploy.sh` | publish a build as a `developer_tools` module via container-mod |
+| `push.sh` | publish a build's `.sif` to ghcr.io (ORAS); never replaces a tag |
 | `profiles/developer_tools` | container-mod profile (identical copy of custom_containeR's) |
 | `run.sh` | pipeline wrapper: `generate_def.sh`, review prompt, `sbatch build.sh`, optional wait |
 | `tests/smoke/` | config + packages exercising each reference type |

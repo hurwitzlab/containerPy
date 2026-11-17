@@ -51,3 +51,12 @@ BRC_MODULES_DIR="/usr/local/usrapps/brc/brc_modules/modules"
 # Recorded as the Home Page of each deployed image; also how deploy.sh
 # recognises container-mod repos/ entries it owns.
 REPO_URL="https://github.com/hurwitzlab/containerPy"
+
+# ------------------------------------------------------------
+# Publishing to GitHub Container Registry (push.sh)
+# ------------------------------------------------------------
+
+# Images go to oras://ghcr.io/<GHCR_NAMESPACE>/<GHCR_PREFIX><name lowercased>:<VERSION_TAG>.
+# The prefix keeps these from colliding with tool images in the same namespace.
+GHCR_NAMESPACE="${GHCR_NAMESPACE:-sweavs111}"
+GHCR_PREFIX="py-"
