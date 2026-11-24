@@ -58,5 +58,5 @@ REPO_URL="https://github.com/hurwitzlab/containerPy"
 
 # Images go to oras://ghcr.io/<GHCR_NAMESPACE>/<GHCR_PREFIX><name lowercased>:<VERSION_TAG>.
 # The prefix keeps these from colliding with tool images in the same namespace.
-GHCR_NAMESPACE="${GHCR_NAMESPACE:-sweavs111}"
+GHCR_NAMESPACE="${GHCR_NAMESPACE:-hurwitzlab}"
 GHCR_PREFIX="py-"
